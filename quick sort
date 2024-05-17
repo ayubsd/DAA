@@ -1,0 +1,91 @@
+
+#include <iostream>
+#include <fstream>
+#include <cstdlib>
+
+using namespace std;
+
+
+int partition(int arr[], int low, int high, int& comparisons) {
+    int pivot = arr[high];
+    int i = low - 1;
+    for (int j = low; j < high; ++j) {
+        if (arr[j] <= pivot) {
+            ++i;
+            swap(arr[i], arr[j]);
+            ++comparisons;
+        }
+    }
+    swap(arr[i + 1], arr[high]);
+    ++comparisons;
+    return i + 1;
+}
+
+void quickSort(int arr[], int low, int high, int& comparisons) {
+    if (low < high) {
+        int pi = partition(arr, low, high, comparisons);
+        quickSort(arr, low, pi - 1, comparisons);
+        quickSort(arr, pi + 1, high, comparisons);
+    }
+}
+void randomArray(int arr[], int size) {
+    for (int i = 0; i < size; ++i) {
+        arr[i] = rand();
+    }
+}
+
+int main() {
+    const int totalSizes = 100;
+    const int totalInstances = 10;
+
+    int sizes[totalSizes];
+    double avgcomp[totalSizes];
+
+    for (int sizeIndex = 0, size = 30; sizeIndex < totalSizes; sizeIndex++, size += 7) {
+        double averageComparisons = 0.0;
+
+        for (int instance = 0; instance < totalInstances; ++instance) {
+            int* myArray = new int[size];
+            randomArray(myArray, size);
+
+            int n = sizeof(myArray) / sizeof(myArray[0]);
+
+             int comparisons = 0;
+            quickSort(myArray, 0, size - 1, comparisons);
+            averageComparisons += comparisons;
+
+            delete[] myArray;
+        }
+
+        sizes[sizeIndex] = size;
+        avgcomp[sizeIndex] = averageComparisons / totalInstances;
+    }
+
+    ofstream outFile("output1.csv");
+    if (outFile.is_open()) {
+        outFile << "Sizes,AvgComp\n";
+        for (int i = 0; i < totalSizes; ++i) {
+            outFile << sizes[i] << "," << avgcomp[i] << "\n";
+        }
+        outFile.close();
+        cout << "Data written to output.csv\n";
+    } else {
+        cerr << "Error opening output file\n";
+    }
+    
+     cout << "Sizes\tAvgComp\n";
+        for (int i = 0; i < totalSizes; ++i) {
+            cout << sizes[i] << "\t" << avgcomp[i] << "\n";
+        }
+
+    return 0;
+}
+-----------------------paste in python----------------
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+df=pd.read_csv("output1.csv")
+df['AvgComp'].plot()
+plt.xlabel("Sizes")
+plt.ylabel("Average comparisons")
+plt.show()
