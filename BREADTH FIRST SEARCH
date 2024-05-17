@@ -62,8 +62,8 @@ public:
 
 int main() {
     // Create a graph given in the example
-    Graph g(5);
-    g.addEdge(0, 1);
+    Graph g(5); //ENTER NO OF VERTICES IN BRACKET
+    g.addEdge(0, 1); //LIST CONNECTION
     g.addEdge(0, 2);
     g.addEdge(1, 2);
     g.addEdge(2, 0);
@@ -71,7 +71,7 @@ int main() {
     g.addEdge(3, 3);
 g.addEdge(3, 4);
     std::cout << "Breadth First Traversal (starting from vertex 2): ";
-    g.BFS(2);
+    g.BFS(2); //ENTER STARTING NODE
     std::cout << std::endl;
 
     return 0;
