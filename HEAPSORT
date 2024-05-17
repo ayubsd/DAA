@@ -70,7 +70,7 @@ int main() {
         avgcomp[sizeIndex] = averageComparisons / totalInstances;
     }
 
-    ofstream outFile("output12.csv");
+    ofstream outFile("output1.csv");
     if (outFile.is_open()) {
         outFile << "Sizes,AvgComp\n";
         for (int i = 0; i < totalSizes; ++i) {
@@ -90,3 +90,11 @@ int main() {
     return 0;
 }
 --------------------------------PASTE IN PYTHON---------------------
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+df=pd.read_csv("output1.csv")
+df['AvgComp'].plot()
+plt.xlabel("Sizes")
+plt.ylabel("Average comparisons")
+plt.show()
