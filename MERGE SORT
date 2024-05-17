@@ -1,0 +1,123 @@
+#include <iostream>
+#include <fstream>
+#include <cstdlib>
+
+using namespace std;
+int merge(int arr[], int l, int m, int r) {
+    int comparisons = 0;
+    int n1 = m - l + 1;
+    int n2 = r - m;
+
+    // Create temporary arrays
+    int L[n1], R[n2];
+
+    // Copy data to temporary arrays L[] and R[]
+    for (int i = 0; i < n1; i++)
+        L[i] = arr[l + i];
+    for (int j = 0; j < n2; j++)
+        R[j] = arr[m + 1 + j];
+
+    // Merge the temporary arrays back into arr[l..r]
+    int i = 0, j = 0, k = l;
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) {
+            arr[k] = L[i];
+            i++;
+        } else {
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
+        comparisons++;
+    }
+
+    // Copy the remaining elements of L[], if there are any
+    while (i < n1) {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+
+    // Copy the remaining elements of R[], if there are any
+    while (j < n2) {
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+    return comparisons;
+}
+
+int mergeSort(int arr[], int l, int r) {
+    int comparisons = 0;
+    if (l < r) {
+        int m = l + (r - l) / 2;
+
+        // Sort first and second halves
+        comparisons += mergeSort(arr, l, m);
+        comparisons += mergeSort(arr, m + 1, r);
+
+        // Merge the sorted halves
+        comparisons += merge(arr, l, m, r);
+    }
+    return comparisons;
+}
+
+void randomArray(int arr[], int size) {
+    for (int i = 0; i < size; ++i) {
+        arr[i] = rand();
+    }
+}
+
+int main() {
+    const int totalSizes = 100;
+    const int totalInstances = 10;
+
+    int sizes[totalSizes];
+    double avgcomp[totalSizes];
+
+    for (int sizeIndex = 0, size = 30; sizeIndex < totalSizes; sizeIndex++, size += 7) {
+        double averageComparisons = 0.0;
+
+        for (int instance = 0; instance < totalInstances; ++instance) {
+            int* myArray = new int[size];
+            randomArray(myArray, size);
+
+           int comparisons = mergeSort(myArray,0, size-1);
+
+            averageComparisons += comparisons;
+
+            delete[] myArray;
+        }
+
+        sizes[sizeIndex] = size;
+        avgcomp[sizeIndex] = averageComparisons / totalInstances;
+    }
+
+    ofstream outFile("output2.csv");
+    if (outFile.is_open()) {
+        outFile << "Sizes,AvgComp\n";
+        for (int i = 0; i < totalSizes; ++i) {
+            outFile << sizes[i] << "," << avgcomp[i] << "\n";
+        }
+        outFile.close();
+        cout << "Data written to output.csv\n";
+    } else {
+        cerr << "Error opening output file\n";
+    }
+    
+     cout << "Sizes\tAvgComp\n";
+        for (int i = 0; i < totalSizes; ++i) {
+            cout << sizes[i] << "\t" << avgcomp[i] << "\n";
+        }
+
+    return 0;
+}
+--------------------PASTE IN PYTHON------------------------
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+df=pd.read_csv("output2.csv")
+df['AvgComp'].plot()
+plt.xlabel("Sizes")
+plt.ylabel("Average comparisons")
+plt.show()
